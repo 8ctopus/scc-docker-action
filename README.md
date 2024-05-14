@@ -34,4 +34,16 @@ jobs:
         uses: hdmsantander/scc-docker-action@3.0
         with:
           args: ${{ env.workspace }} src --ci -i java -f json -o scc.json
+
+      - name: Parse scc output
+        id: parse_scc
+        run: echo "::set-output name=loc::$(jq '.[0].Code' scc.json)"
+
+      - name: Make a lines of code badge
+        uses: emibcn/badge-action@v2.0.2
+        with:
+          label: Lines of Code
+          status: ${{ steps.parse_scc.outputs.loc }}
+          color: 'blue'
+          path: .github/lines.svg
 ```
